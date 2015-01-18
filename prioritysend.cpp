@@ -5,26 +5,18 @@
 
 class CPrioritySend : public CModule {
 public:
-	const CString MessagePrefix = "(p!)";
-	
 	MODCONSTRUCTOR(CPrioritySend) {}
 	
 	virtual EModRet OnUserNotice(CString& sTarget, CString& sMessage) override {
-		if (!sMessage.TrimPrefix(MessagePrefix))
-			return CONTINUE;
-		
-		CIRCSock* pIRCSock = GetNetwork()->GetIRCSock();
-		
-		if (!pIRCSock)
-			return CONTINUE;
-		
-		pIRCSock->PutIRCQuick("NOTICE " + sTarget + " :" + sMessage);
-		
-		return HALT;
+		return ProcessMessage("NOTICE", sTarget, sMessage);
 	}
 	
 	virtual EModRet OnUserMsg(CString& sTarget, CString& sMessage) override {
-		if (!sMessage.TrimPrefix(MessagePrefix))
+		return ProcessMessage("PRIVMSG", sTarget, sMessage);
+	}
+	
+	EModRet ProcessMessage(const CString& sFunction, CString& sTarget, CString& sMessage) {
+		if (!sMessage.TrimPrefix("(p!)")) // TODO: This could be a config variable
 			return CONTINUE;
 		
 		CIRCSock* pIRCSock = GetNetwork()->GetIRCSock();
@@ -32,7 +24,7 @@ public:
 		if (!pIRCSock)
 			return CONTINUE;
 		
-		pIRCSock->PutIRCQuick("PRIVMSG " + sTarget + " :" + sMessage);
+		pIRCSock->PutIRCQuick(sFunction + " " + sTarget + " :" + sMessage);
 		
 		return HALT;
 	}
