@@ -15,6 +15,7 @@ public:
 		return ProcessMessage("PRIVMSG", sTarget, sMessage);
 	}
 	
+private:
 	EModRet ProcessMessage(const CString& sFunction, CString& sTarget, CString& sMessage) {
 		if (!sMessage.TrimPrefix("(p!)")) // TODO: This could be a config variable
 			return CONTINUE;
