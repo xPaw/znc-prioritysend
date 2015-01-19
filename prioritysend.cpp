@@ -19,7 +19,12 @@ public:
 		if (!sMessage.TrimPrefix("(p!)")) // TODO: This could be a config variable
 			return CONTINUE;
 		
-		CIRCSock* pIRCSock = GetNetwork()->GetIRCSock();
+		CIRCNetwork* pNetwork = GetNetwork();
+		
+		if (!pNetwork)
+			return CONTINUE;
+		
+		CIRCSock* pIRCSock = pNetwork->GetIRCSock();
 		
 		if (!pIRCSock)
 			return CONTINUE;
